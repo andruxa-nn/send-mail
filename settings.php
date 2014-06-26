@@ -8,8 +8,8 @@ class Settings {
 	public $db_host = '127.0.0.1';
 	public $db_user = 'root';
 	public $db_pass = '';
-	public $dir1 = 'C:\\xampp\\htdocs\\test\\folder1\\';
-	public $dir2 = 'C:\\xampp\\htdocs\\test\\folder2\\';
+	public $dir1 = 'C:\\xampp\\htdocs\\sendMail\\folder1\\';
+	public $dir2 = 'C:\\xampp\\htdocs\\sendMail\\folder2\\';
 	public $Data = array();
 	public $dbh = '';
 
@@ -37,10 +37,7 @@ class Settings {
 			$d = opendir($this->dir1);
 			while( ($e = readdir($d)) !== false ) {
 				$result = $this->emailRegularize(@file_get_contents($this->dir1.$e));
-				
-
 				foreach( $result[0] as $key => $value ) {
-					/*
 					if( $this->nameCheck($value) !== false ) {
 						try {
 							$query_db = $this->dbh->query("INSERT INTO mail SET item = '{$value}'");
@@ -52,14 +49,9 @@ class Settings {
 						$this->Data['Errors'][] = "Адрес $addEmail уже содержится в базе.";
 						continue;
 					}
-					*/
-					print_r($result[0]);
 				}
-				/*
 				@copy($this->dir1.$e, $this->dir2.$e);
 				@unlink($this->dir1.$e);
-				
-				*/
 			}
 		}
 
@@ -70,16 +62,15 @@ class Settings {
 	}
 
 	private function emailCheck($email) {
-		if( preg_match('/^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$/is', $email) ) {
+		if( preg_match('/([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})/im', $email) ) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	private function emailRegularize($emailsArray) {
-		$chars = array(',', '>', ':', ';', '\'', '~', '!', '"', '#', '$', '%', '&', '(', ')', '<', '=', '?', '{', '}', '/');
-		@preg_match_all('/^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$/is', trim(str_replace($chars, ' ', $emailsArray)), $result);
+	private function emailRegularize($mixedString) {
+		preg_match_all('/([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})/im', $mixedString, $result);
 		return $result;
 	}
 
