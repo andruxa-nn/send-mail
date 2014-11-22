@@ -15,7 +15,7 @@ $settings->getListEmails();
 	<link href="./style/style.css" type="text/css" rel="stylesheet"/>
 	<script src="./js/jquery-1.8.3.min.js" type="text/javascript"></script>
 	<script src="./bootstrap-3.1.1-dist/js/bootstrap.min.js" type="text/javascript"></script>
-	<script src="./js/myJavaScript.js" type="text/javascript"></script>
+	<script src="./js/myJavaScript.js?v<?= rand(100, 999); ?>" type="text/javascript"></script>
 </head>
 
 <body>
@@ -28,7 +28,7 @@ $settings->getListEmails();
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="<?= siteUrl . '/test/' ?>"><?= projectName; ?></a>
+				<a class="navbar-brand" href="<?= siteUrl . '/sendMail/' ?>"><?= projectName; ?></a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
@@ -49,7 +49,7 @@ $settings->getListEmails();
 					</li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#">Default</a></li>
+					<li><a href="#" onclick="return SendMail.clearTrash();">Очистить E-mail'ы</a></li>
 					<li><a href="#">Static top</a></li>
 					<li class="active"><a href="#">Fixed top</a></li>
 				</ul>
@@ -122,8 +122,8 @@ $settings->getListEmails();
 						<td><?= $key; ?></td>
 						<td><?= $value; ?></td>
 						<td>
-							<button class="btn btn-default btn-sm" type="submit" name="editEmail" value="<?= $key; ?>" onclick="return editItem(this);"><span class="glyphicon glyphicon-pencil"></span>&nbsp; Редактировать</button>
-							<button class="btn btn-default btn-sm" type="submit" name="delEmail" value="<?= $key; ?>" onclick="return delItem(this);"><span class="glyphicon glyphicon-remove"></span>&nbsp; Удалить</button>
+							<button class="btn btn-default btn-sm" type="submit" name="editEmail" value="<?= $key; ?>" onclick="return SendMail.editItem(this);"><span class="glyphicon glyphicon-pencil"></span>&nbsp; Редактировать</button>
+							<button class="btn btn-default btn-sm" type="submit" name="delEmail" value="<?= $key; ?>" onclick="return SendMail.delItem(this);"><span class="glyphicon glyphicon-remove"></span>&nbsp; Удалить</button>
 						</td>
 					</tr>
 					<?php } ?>

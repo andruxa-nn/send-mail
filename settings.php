@@ -16,17 +16,10 @@ class Settings {
 	function __construct() {
 		try {
 			$this->dbh = new PDO("mysql:host=$this->db_host;dbname=emails", $this->db_user, $this->db_pass);
-			//$query_db = $dbh->query("CREATE TABLE mail(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, item TEXT NOT NULL)");
 		} catch(PDOException $exeption) {
 			echo $exeption->getMessage();
 		}
 		
-		/*
-		mysql_connect($this->bd_host, $this->bd_user, $this->bd_pass) or die("Нет соединения с базой MySQL!");
-		@mysql_query("CREATE DATABASE emails");
-		mysql_select_db("emails");
-		mysql_query("CREATE TABLE mail(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, item TEXT NOT NULL)");
-		*/
 
 		if( !is_dir($this->dir1) || !is_dir($this->dir2) ) {
 			@mkdir($this->dir1);
