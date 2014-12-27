@@ -60,15 +60,28 @@ var SendMail = {
     },
     // Удаление e-mail адреса
     delItem : function(self) {
-        if (confirm('Подтверждаете удаление?')) {
-            $.ajax({
-                url: '/sendMail/http.php?do=delEmail&id=' + $(self).attr('value'),
-                type: 'POST',
-                success: function() {
-                    $(self).closest('tr').fadeOut('fast', function() {
-                        $(this).remove();
-                    });
-                }
+        var modelCont = $('#myModal');
+        if (modelCont.length) {
+            var trCont = $(self).closest('tr');
+            modelCont.find('#myModalLabel').text('Удаление e-mail адреса');
+            modelCont.find('.modal-body').html('' +
+                'Подтверждаете удаление <strong>' + trCont.find('td:eq(1)').text() + '</strong> ?');
+            modelCont.modal({
+                backdrop: false
+            });
+            modelCont.find('.modal-footer button:eq(0)').unbind().click(function(event) {
+                $.ajax({
+                    url: '/sendMail/http.php?do=delEmail&id=' + $(self).attr('value'),
+                    type: 'POST',
+                    success: function() {
+                        modelCont.modal('hide').on('hidden.bs.modal', function(event) {
+                            trCont.fadeOut('fast', function() {
+                                $(this).remove();
+                            });
+                            $(this).unbind(event);
+                        });
+                    }
+                });
             });
         }
         return false;
@@ -86,8 +99,23 @@ var SendMail = {
     },
     // Инициализация элементов на странице
     autoInint : function() {
-        $('.alert').prepend('<button type="button" class="close"' +
-        + 'data-dismiss="alert" aria-hidden="true">&times;</button>');
+        $('.alert').prepend('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+        
+        $('<div id="myModal" class="modal fade">' +
+            '<div class="modal-dialog">' +
+                '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+                        '<h4 class="modal-title" id="myModalLabel"></h4>' +
+                    '</div>' +
+                    '<div class="modal-body"></div>' +
+                    '<div class="modal-footer">' +
+                        '<button type="button" class="btn btn-primary">Ок</button>' +
+                        '<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>').appendTo('body');
     }
 }
 

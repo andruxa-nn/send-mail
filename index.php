@@ -30,6 +30,7 @@ $sendmail = new SendMail;
 				<a class="navbar-brand" href="<?= $sendmail->siteUrl; ?>"><?= $sendmail->projectName; ?></a>
 			</div>
 			<div class="navbar-collapse collapse">
+			    <?php /*
 				<ul class="nav navbar-nav">
 					<li class="active"><a href="#">Home</a></li>
 					<li><a href="#about">About</a></li>
@@ -47,10 +48,17 @@ $sendmail = new SendMail;
 						</ul>
 					</li>
 				</ul>
+                */ ?>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#" onclick="return SendMail.clearTrash();">Очистить E-mail'ы</a></li>
-					<li><a href="#" onclick="return SendMail.parseFolder();">Распарсить папку</a></li>
-					<li class="active"><a href="#">Fixed top</a></li>
+				    <li class="dropdown">
+				        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Опции <b class="caret"></b></a>
+    				    <ul class="dropdown-menu">
+    				        <li class="dropdown-header">Nav header</li>
+    				        <li class="divider"></li>
+    				        <li><a href="#" onclick="return SendMail.clearTrash();"><span class="glyphicon glyphicon-filter"></span> Очистить E-mail'ы</a></li>
+    				        <li><a href="?parseFolder" onclick="return SendMail.parseFolder();"><span class="glyphicon glyphicon-import"></span> Распарсить папку</a></li>
+    				    </ul>
+    				</li>
 				</ul>
 			</div>
 		</div>

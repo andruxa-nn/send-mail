@@ -19,6 +19,7 @@ class SendMail extends Config {
         else if ($_REQUEST['id'] && $_REQUEST['newName']) $this->editEmail($_REQUEST['id'], $_REQUEST['newName']);
         else if ($_REQUEST['delEmail']) $this->delEmail($_REQUEST['delEmail']);
         else if ($_REQUEST['url']) $this->addUrl($_REQUEST['url']);
+        else if (isset($_REQUEST['parseFolder'])) $this->parseFolder();
 	}
 
 	private function emailCheck($email) {

@@ -17,7 +17,6 @@ switch($_REQUEST['do']) {
         break;
     case 'parseFolder':
         $sendmail->parseFolder();
-        echo '!';
         break;
 }
 
