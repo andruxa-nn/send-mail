@@ -1,21 +1,20 @@
 <?php
-require("./settings.php");
-$settings = new Settings;
-$settings->getListEmails();
+require("./sendmail.php");
+$sendmail = new SendMail;
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title><?= projectName; ?></title>
+	<title><?= $sendmail->projectName; ?></title>
 	<link href="./img/favicon.ico" rel="shortcut icon">
 	<link href="./bootstrap-3.1.1-dist/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
 	<link href="./style/style.css" type="text/css" rel="stylesheet"/>
 	<script src="./js/jquery-1.8.3.min.js" type="text/javascript"></script>
 	<script src="./bootstrap-3.1.1-dist/js/bootstrap.min.js" type="text/javascript"></script>
-	<script src="./js/myJavaScript.js?v<?= rand(100, 999); ?>" type="text/javascript"></script>
+	<script src="./js/sendmail.js?v<?= rand(100, 999); ?>" type="text/javascript"></script>
 </head>
 
 <body>
@@ -28,7 +27,7 @@ $settings->getListEmails();
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="<?= siteUrl . '/sendMail/' ?>"><?= projectName; ?></a>
+				<a class="navbar-brand" href="<?= $sendmail->siteUrl; ?>"><?= $sendmail->projectName; ?></a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
@@ -50,7 +49,7 @@ $settings->getListEmails();
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="#" onclick="return SendMail.clearTrash();">Очистить E-mail'ы</a></li>
-					<li><a href="#">Static top</a></li>
+					<li><a href="#" onclick="return SendMail.parseFolder();">Распарсить папку</a></li>
 					<li class="active"><a href="#">Fixed top</a></li>
 				</ul>
 			</div>
@@ -58,20 +57,23 @@ $settings->getListEmails();
 	</div>
 
 	<div class="container">
-		<?php if( $settings->Data['Emails'] ) echo '<p>Элементов в массиве: ' . count($settings->Data['Emails']) . '</p>'; ?>
+		<?php
+		    $sendmail->getListEmails();
+		    if ($countEmails = count($sendmail->Data['Emails'])) echo '<p>Элементов в массиве: ' . $countEmails . '</p>';
+		?>
 		<div class="jumbotron">
 			<h1>Форма добавления адресов</h1>
 			<form class="form-horizontal" action="" method="post">
 				<div class="form-group">
 					<label class="control-label col-sm-3" for="inputEmail">E-mail адрес</label>
 					<div class="col-sm-9">
-						<input class="form-control input-sm" id="inputEmail" type="email" name="addEmail" placeholder="info@mycompany.ru">
+						<input class="form-control input-sm" id="inputEmail" type="email" name="email" placeholder="info@mycompany.ru">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="control-label col-sm-3" for="inputUrl">Url адрес (с http://)</label>
 					<div class="col-sm-9">
-						<input class="form-control input-sm" id="inputUrl" type="url" name="addUrl" placeholder="http://somewhere.ru">
+						<input class="form-control input-sm" id="inputUrl" type="url" name="url" placeholder="http://somewhere.ru">
 					</div>
 				</div>
 				<div class="form-group">
@@ -89,24 +91,26 @@ $settings->getListEmails();
 				</div>
 			</form>
 		</div>
+		
+		<?php // echo '<pre>'; print_r($sendmail->Data); echo '</pre>'; ?>
 
-		<?php if( $settings->Data['Errors'] ) { ?>
+		<?php if ($sendmail->Data['Errors']) { ?>
 		<div class="alert alert-danger">
-			<?php foreach( $settings->Data['Errors'] as $value ) { ?>
+			<?php foreach ($sendmail->Data['Errors'] as $value) { ?>
 				<?= $value . '<br />'; ?>
 			<?php } ?>
 		</div>
 		<?php } ?>
 
-		<?php if( $settings->Data['Success'] ) { ?>
+		<?php if ($sendmail->Data['Success']) { ?>
 		<div class="alert alert-success">
-			<?php foreach( $settings->Data['Success'] as $value ) { ?>
+			<?php foreach( $sendmail->Data['Success'] as $value ) { ?>
 				<?= $value . '<br />'; ?>
 			<?php } ?>
 		</div>
 		<?php } ?>
 
-		<?php if( $settings->Data['Emails'] ) { ?>
+		<?php if ($sendmail->Data['Emails']) { ?>
 		<form action="" method="post">
 			<table class="table table-condensed table-hover">
 				<thead>
@@ -117,7 +121,7 @@ $settings->getListEmails();
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach( $settings->Data['Emails'] as $key => $value ) { ?>
+					<?php foreach ($sendmail->Data['Emails'] as $key => $value) { ?>
 					<tr>
 						<td><?= $key; ?></td>
 						<td><?= $value; ?></td>
@@ -136,7 +140,7 @@ $settings->getListEmails();
 
 	<div id="footer">
 		<div class="container">
-			<p class="text-muted">&copy; MyCompany <?= date(Y); ?></p>
+			<p class="text-muted">&copy; <?= $sendmail->projectName; ?> <?= date(Y); ?></p>
 		</div>
 	</div>
 

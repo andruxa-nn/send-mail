@@ -1,0 +1,17 @@
+<?php
+error_reporting(E_ALL ^ E_NOTICE);
+
+class Config {
+    public $projectName = 'База E-mail адресов';
+    public $siteUrl = 'http://127.0.0.1/sendMail/';
+    public $db_host = '127.0.0.1';
+    public $db_name = 'emails';
+    public $db_user = 'root';
+    public $db_pass = '';
+    public $dir1 = 'C:\\xampp\\htdocs\\sendMail\\folder_input\\';
+    public $dir2 = 'C:\\xampp\\htdocs\\sendMail\\folder_output\\';
+    public $Data = array();
+    public $dbh = '';
+}
+
+?>

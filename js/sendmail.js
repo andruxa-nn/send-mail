@@ -1,4 +1,5 @@
 var SendMail = {
+    // Очистка от автоматизированных адресов
     clearTrash : function() {
         if (confirm('Подтверждаете очистку?')) {
             var trashIdArr = [], trashPatterns = ['noreply', 'no-reply', 'nobody',
@@ -36,6 +37,7 @@ var SendMail = {
         }
         return false;
     },
+    // Редактирование e-mail адреса
     editItem : function(self) {
         var name = $(self).parent().siblings(':eq(1)');
         if (newName = prompt(name.text())) {
@@ -56,6 +58,7 @@ var SendMail = {
         }
         return false;
     },
+    // Удаление e-mail адреса
     delItem : function(self) {
         if (confirm('Подтверждаете удаление?')) {
             $.ajax({
@@ -70,6 +73,18 @@ var SendMail = {
         }
         return false;
     },
+    // Извлечение e-mail адресов из файлов в папке folder_input
+    parseFolder : function() {
+        if (confirm('Подтверждаете выполнение операции?')) {
+            $.ajax({
+               url: '/sendMail/http.php?do=parseFolder',
+               type: 'POST',
+               success: function() {}
+            });
+        }
+        return false;  
+    },
+    // Инициализация элементов на странице
     autoInint : function() {
         $('.alert').prepend('<button type="button" class="close"' +
         + 'data-dismiss="alert" aria-hidden="true">&times;</button>');
