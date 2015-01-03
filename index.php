@@ -16,7 +16,6 @@ $sendmail = new SendMail;
 	<script src="./bootstrap-3.1.1-dist/js/bootstrap.min.js" type="text/javascript"></script>
 	<script src="./js/sendmail.js?v<?= rand(100, 999); ?>" type="text/javascript"></script>
 </head>
-
 <body>
 	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
@@ -30,25 +29,6 @@ $sendmail = new SendMail;
 				<a class="navbar-brand" href="<?= $sendmail->siteUrl; ?>"><?= $sendmail->projectName; ?></a>
 			</div>
 			<div class="navbar-collapse collapse">
-			    <?php /*
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="#">Home</a></li>
-					<li><a href="#about">About</a></li>
-					<li><a href="#contact">Contact</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="#">Action</a></li>
-							<li><a href="#">Another action</a></li>
-							<li><a href="#">Something else here</a></li>
-							<li class="divider"></li>
-							<li class="dropdown-header">Nav header</li>
-							<li><a href="#">Separated link</a></li>
-							<li><a href="#">One more separated link</a></li>
-						</ul>
-					</li>
-				</ul>
-                */ ?>
 				<ul class="nav navbar-nav navbar-right">
 				    <li class="dropdown">
 				        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Опции <b class="caret"></b></a>
@@ -56,14 +36,13 @@ $sendmail = new SendMail;
     				        <li class="dropdown-header">Nav header</li>
     				        <li class="divider"></li>
     				        <li><a href="#" onclick="return SendMail.clearTrash();"><span class="glyphicon glyphicon-filter"></span> Очистить E-mail'ы</a></li>
-    				        <li><a href="?parseFolder" onclick="return SendMail.parseFolder();"><span class="glyphicon glyphicon-import"></span> Распарсить папку</a></li>
+    				        <li><a href="<?= $sendmail->siteUrl; ?>/popup.php?do=parseFolder" onclick="return SendMail.parseFolder();"><span class="glyphicon glyphicon-import"></span> Распарсить папку</a></li>
     				    </ul>
     				</li>
 				</ul>
 			</div>
 		</div>
 	</div>
-
 	<div class="container">
 		<?php
 		    $sendmail->getListEmails();
@@ -99,9 +78,6 @@ $sendmail = new SendMail;
 				</div>
 			</form>
 		</div>
-		
-		<?php // echo '<pre>'; print_r($sendmail->Data); echo '</pre>'; ?>
-
 		<?php if ($sendmail->Data['Errors']) { ?>
 		<div class="alert alert-danger">
 			<?php foreach ($sendmail->Data['Errors'] as $value) { ?>
@@ -109,48 +85,43 @@ $sendmail = new SendMail;
 			<?php } ?>
 		</div>
 		<?php } ?>
-
 		<?php if ($sendmail->Data['Success']) { ?>
 		<div class="alert alert-success">
-			<?php foreach( $sendmail->Data['Success'] as $value ) { ?>
+			<?php foreach ($sendmail->Data['Success'] as $value) { ?>
 				<?= $value . '<br />'; ?>
 			<?php } ?>
 		</div>
 		<?php } ?>
-
 		<?php if ($sendmail->Data['Emails']) { ?>
-		<form action="" method="post">
-			<table class="table table-condensed table-hover">
-				<thead>
-					<tr>
-						<th>Id</th>
-						<th>E-mail</th>
-						<th>&nbsp;</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ($sendmail->Data['Emails'] as $key => $value) { ?>
-					<tr>
-						<td><?= $key; ?></td>
-						<td><?= $value; ?></td>
-						<td>
-							<button class="btn btn-default btn-sm" type="submit" name="editEmail" value="<?= $key; ?>" onclick="return SendMail.editItem(this);"><span class="glyphicon glyphicon-pencil"></span>&nbsp; Редактировать</button>
-							<button class="btn btn-default btn-sm" type="submit" name="delEmail" value="<?= $key; ?>" onclick="return SendMail.delItem(this);"><span class="glyphicon glyphicon-remove"></span>&nbsp; Удалить</button>
-						</td>
-					</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-		</form>
+		<table class="table table-condensed table-hover">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>E-mail</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($sendmail->Data['Emails'] as $key => $value) { ?>
+				<tr>
+					<td><?= $key; ?></td>
+					<td><?= $value; ?></td>
+					<td>
+						<a class="btn btn-default btn-sm" href="<?= $sendmail->siteUrl; ?>/popup.php?do=editEmail&id=<?= $key; ?>" onclick="return SendMail.editItem(this);" target="_blank">
+						    <span class="glyphicon glyphicon-pencil"></span>&nbsp; Редактировать</a>
+						<a class="btn btn-default btn-sm" href="<?= $sendmail->siteUrl; ?>/popup.php?do=delEmail&id=<?= $key; ?>" onclick="return SendMail.delItem(this);" target="_blank">
+						    <span class="glyphicon glyphicon-remove"></span>&nbsp; Удалить</a>
+					</td>
+				</tr>
+				<?php } ?>
+			</tbody>
+		</table>
 		<?php } ?>
-
 	</div>
-
 	<div id="footer">
 		<div class="container">
 			<p class="text-muted">&copy; <?= $sendmail->projectName; ?> <?= date(Y); ?></p>
 		</div>
 	</div>
-
 </body>
 </html>

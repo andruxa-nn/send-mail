@@ -15,11 +15,25 @@ class SendMail extends Config {
 			@mkdir($this->dir2);
 		}
 
-        if ($_REQUEST['email']) $this->addEmail($_REQUEST['email']);
-        else if ($_REQUEST['id'] && $_REQUEST['newName']) $this->editEmail($_REQUEST['id'], $_REQUEST['newName']);
-        else if ($_REQUEST['delEmail']) $this->delEmail($_REQUEST['delEmail']);
-        else if ($_REQUEST['url']) $this->addUrl($_REQUEST['url']);
-        else if (isset($_REQUEST['parseFolder'])) $this->parseFolder();
+        switch($_REQUEST['do']) {
+            case 'addEmail':
+                $this->addEmail($_REQUEST['email']);
+                break;
+            case 'editEmail':
+                $this->getEmail($_REQUEST['id']);
+                $this->editEmail($_REQUEST['id'], $_REQUEST['newName']);
+                break;
+            case 'delEmail':
+                $this->getEmail($_REQUEST['id']);
+                $this->delEmail($_REQUEST['id']);
+                break;
+            case 'addUrl':
+                $this->addUrl($_REQUEST['url']);
+                break;
+            case 'parseFolder':
+                $this->parseFolder();
+                break;
+        }
 	}
 
 	private function emailCheck($email) {
@@ -95,14 +109,27 @@ class SendMail extends Config {
 			try {
 				$query_db = $this->dbh->query("DELETE FROM mail WHERE id = $id");
 				$this->Data['Success'][] = "Адрес $id успешно удален.";
+                $this->Data['deleted'] = true;
 			} catch (PDOException $exeption) {
 				$this->Data['Errors'][] = "Ошибка! $exeption";
 			}
 		}
 	}
+    
+    public function getEmail($id) {
+        if ((int)$id) {
+            try {
+                $query_db = $this->dbh->query("SELECT * FROM mail WHERE id = $id");
+                $query_db->setFetchMode(PDO::FETCH_ASSOC);
+                $this->Data['Email'] = $query_db->fetch();
+            } catch (PDOException $exeption) {
+                $this->Data['Errors'][] = "Ошибка! $exeption";
+            }
+        }
+    }
 
 	public function getListEmails() {
-		$query_db = $this->dbh->query("SELECT * FROM mail ORDER BY id LIMIT 17000, 1000");
+		$query_db = $this->dbh->query("SELECT * FROM mail ORDER BY id LIMIT 15000, 10000");
 		$query_db->setFetchMode(PDO::FETCH_ASSOC);
 		while($row = $query_db->fetch()) {
 			$this->Data['Emails'][$row['id']] = $row['item'];

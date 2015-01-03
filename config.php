@@ -3,7 +3,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 class Config {
     public $projectName = 'База E-mail адресов';
-    public $siteUrl = 'http://127.0.0.1/sendMail/';
+    public $siteUrl = 'http://127.0.0.1/sendMail';
     public $db_host = '127.0.0.1';
     public $db_user = 'root';
     public $db_pass = '';
