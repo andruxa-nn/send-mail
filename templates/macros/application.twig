@@ -1,0 +1,24 @@
+{% macro btn(message, href, type, attributes) %}
+    <a class="btn btn-default btn-sm" href="{{ href }}" target="_blank" {{ attributes|default('')|raw }} >
+        <span class="glyphicon glyphicon-{{ type|default('pencil') }}"></span>&nbsp; {{ message }}
+    </a>
+{% endmacro %}
+
+{% macro btnEdit(message, id) %}
+    {{ _self.btn(message, '/popup.php?do=editEmail&id='~''~id, 'pencil', 'onclick="return SendMail.editItem(this);"') }}
+{% endmacro %}
+
+{% macro btnRemove(message, id) %}
+    {{ _self.btn(message, '/popup.php?do=delEmail&id='~''~id, 'remove', 'onclick="return SendMail.delItem(this);"') }}
+{% endmacro %}
+
+{% macro alert(message, type, style) %}
+    {% if message != '' %}
+        <div class="alert alert-{{ type|default('success') }} alert-block">
+            {# <a class="close" data-dismiss="alert">×</a> #}
+            <span style="{{ style|default('font-weight: bold;') }}">
+            {{ message }}
+            </span>
+        </div>
+    {% endif %}
+{% endmacro %}

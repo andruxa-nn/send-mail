@@ -1,0 +1,125 @@
+{% import "macros/application.twig" as macros %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>{{ app.getName() }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% use "base/stylesheets.twig" %}
+    {% block stylesheets %}
+    {{ parent() }}
+    {% endblock stylesheets %}
+    <link rel="shortcut icon" href="{{ assetUri }}/img/favicon.ico">
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">{{ app.getName() }}</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Опции <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">Nav header</li>
+                            <li class="divider"></li>
+                            <li><a href="#" onclick="return SendMail.clearTrash();"><span class="glyphicon glyphicon-filter"></span> Очистить E-mail'ы</a></li>
+                            <li><a href="/popup.php?do=parseFolder" onclick="return SendMail.parseFolder();"><span class="glyphicon glyphicon-import"></span> Распарсить папку</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+
+    {% if emails|length>0 %}
+        <p>Элементов в массиве: {{ emails|length }}</p>
+    {% endif %}
+        <div class="jumbotron">
+            <h1>Форма добавления адресов</h1>
+            <form class="form-horizontal" action="" method="post">
+                {{ macros.alert(flash['success'], 'success') }}
+                {{ macros.alert(flash['fail'], 'danger') }}
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="inputEmail">E-mail адрес</label>
+                    <div class="col-sm-9">
+                        <input class="form-control input-sm" id="inputEmail" type="email" name="email" placeholder="info@mycompany.ru">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="inputUrl">Url адрес (с http://)</label>
+                    <div class="col-sm-9">
+                        <input class="form-control input-sm" id="inputUrl" type="url" name="url" placeholder="http://somewhere.ru">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3" for="inputFile">Загрузить файл:</label>
+                    <div class="col-sm-9">
+                        <input class="form-control input-sm" id="inputFile" type="file" name="file">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <button class="btn btn-primary btn-sm" type="submit" name="otpravit">Отправить</button>
+                        <button class="btn btn-default btn-sm" type="reset">Сбросить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {#
+        <?php if ($sendmail->Data['Errors']) { ?>
+        <div class="alert alert-danger">
+            <?php foreach ($sendmail->Data['Errors'] as $value) { ?>
+                <?= $value . '<br />'; ?>
+            <?php } ?>
+        </div>
+        <?php } ?>
+        <?php if ($sendmail->Data['Success']) { ?>
+        <div class="alert alert-success">
+            <?php foreach ($sendmail->Data['Success'] as $value) { ?>
+                <?= $value . '<br />'; ?>
+            <?php } ?>
+        </div>
+        <?php } ?>
+        #}
+        {% if emails %}
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>E-mail</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for email in emails %}
+                <tr>
+                    <td>{{ email['id'] }}</td>
+                    <td>{{ email['item'] }}</td>
+                    <td>
+                        {{ macros.btnEdit('Редактировать', email['id']) }}
+                        {{ macros.btnRemove('Удалить', email['id']) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+    <div id="footer">
+        <div class="container">
+            <p class="text-muted">&copy; {{ app.getName() }} {{ 'now'|date('Y') }}</p>
+        </div>
+    </div>
+</body>
+</html>
