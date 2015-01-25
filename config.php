@@ -8,8 +8,8 @@ class Config {
     public $db_user = 'root';
     public $db_pass = '';
     public $db_name = 'emails';
-    public $dir1 = 'folder_input';
-    public $dir2 = 'folder_output';
+    public $dir1 = 'C:\\xampp\\htdocs\\sendMail\\folder_input\\';
+    public $dir2 = 'C:\\xampp\\htdocs\\sendMail\\folder_output\\';
     public $Data = array();
     public $dbh = '';
 }
