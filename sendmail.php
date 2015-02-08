@@ -31,13 +31,13 @@ class SendMail extends Config {
                 $this->addUrl($_REQUEST['url']);
                 break;
             case 'parseFolder':
-                $this->parseFolder();
+                //$this->parseFolder();
                 break;
         }
 	}
 
 	private function emailCheck($email) {
-		return (preg_match('/([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})/im', $email)) ? true : false;
+		return !!preg_match('/([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})/im', $email);
 	}
 
 	private function emailRegularize($mixedString) {
@@ -135,28 +135,30 @@ class SendMail extends Config {
 			$this->Data['Emails'][$row['id']] = $row['item'];
 		}
 	}
-    
+
     public function parseFolder() {
-        if (is_dir($this->dir1)) {
-            $d = opendir($this->dir1);
-            while (($e = readdir($d)) !== false) {
-                $result = $this->emailRegularize(@file_get_contents($this->dir1.$e));
-                foreach ($result[0] as $key => $value) {
-                    if ($this->nameDubleCheck($value) !== false) {
+        $listDir = new RecursiveDirectoryIterator($this->dir1);
+        $iterator = new RecursiveIteratorIterator($listDir);
+
+        foreach($iterator as $value) {
+            if (is_file($value)) {
+                $item = $this->emailRegularize(@file_get_contents($value));
+                foreach ($item as $email) {
+                    if ($this->nameDubleCheck($email) !== false) {
                         try {
-                            $query_db = $this->dbh->query("INSERT INTO mail SET item = '{$value}'");
-                            $this->Data['Success'][] = "Адрес $addEmail успешно добавлен в базу.";
+                            $this->dbh->query("INSERT INTO mail SET item = '$email'");
+                            $this->Data['Success'][] = "Адрес $email успешно добавлен в базу.";
                         } catch (PDOException $exeption) {
                             $this->Data['Errors'][] = "Ошибка! $exeption";
                         }
                     } else {
-                        $this->Data['Errors'][] = "Адрес $addEmail уже содержится в базе.";
+                        $this->Data['Errors'][] = "Адрес $email уже содержится в базе.";
                         continue;
                     }
                 }
-                @copy($this->dir1.$e, $this->dir2.$e);
-                @unlink($this->dir1.$e);
             }
+            @copy($value, $this->dir2.basename($value));
+            @unlink($value);
         }
     }
 }
