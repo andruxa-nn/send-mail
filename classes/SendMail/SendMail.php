@@ -1,11 +1,11 @@
 <?php
-require("./config.php");
-
 class SendMail extends Config {
     function __construct() {
         try {
             $this->dbh = new PDO("mysql:host=$this->db_host;dbname=$this->db_name", $this->db_user, $this->db_pass);
         } catch(PDOException $exeption) {
+            //$this->dbh->query("CREATE DATABASE IF NOT EXISTS `emails` DEFAULT CHARACTER SET `utf8`");
+            //CREATE TABLE `mail` (`id` INT(8) NOT NULL PRIMARY KEY AUTO_INCREMENT, `item` VARCHAR(255) NOT NULL UNIQUE KEY);
             echo $exeption->getMessage();
         }
         if (!is_dir($this->dir1) || !is_dir($this->dir2)) {
@@ -126,7 +126,7 @@ class SendMail extends Config {
     }
 
     public function getListEmails() {
-        $query_db = $this->dbh->query("SELECT * FROM mail ORDER BY id LIMIT 15000, 10000");
+        $query_db = $this->dbh->query("SELECT * FROM mail ORDER BY id LIMIT 0, 10000");
         $query_db->setFetchMode(PDO::FETCH_ASSOC);
         while ($row = $query_db->fetch()) {
             $this->Data['Emails'][$row['id']] = $row['item'];
@@ -153,10 +153,8 @@ class SendMail extends Config {
                     }
                 }
             }
-            @copy($value, $this->dir2.basename($value));
-            @unlink($value);
+            //@copy($value, $this->dir2.basename($value));
+            //@unlink($value);
         }
     }
 }
-
-?>
