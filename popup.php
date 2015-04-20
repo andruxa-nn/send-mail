@@ -1,5 +1,4 @@
 <?php
-require("./sendmail.php");
 $sendmail = new SendMail;
 ?>
 <!DOCTYPE html>

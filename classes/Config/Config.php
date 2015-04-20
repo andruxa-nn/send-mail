@@ -2,14 +2,17 @@
 error_reporting(E_ALL ^ E_NOTICE);
 
 class Config {
-    public $projectName = 'База E-mail адресов';
-    public $siteUrl = 'http://127.0.0.1/sendMail';
-    public $db_host = '127.0.0.1';
-    public $db_user = 'root';
-    public $db_pass = '';
-    public $db_name = 'emails';
-    public $dir1 = 'folder_input';
-    public $dir2 = 'folder_output';
-    public $Data = array();
-    public $dbh = '';
+    const projectName = 'База E-mail адресов';
+    const siteUrl = 'http://127.0.0.1/send-mail';
+    const db_host = '127.0.0.1';
+    const db_user = 'root';
+    const db_pass = '';
+    const db_name = 'emails';
+    const dir1 = 'folder_input';
+    const dir2 = 'folder_output';
+}
+
+if (!is_dir(Config::dir1) || !is_dir(Config::dir2)) {
+    @mkdir(Config::dir1);
+    @mkdir(Config::dir2);
 }

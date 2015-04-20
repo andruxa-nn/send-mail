@@ -7,7 +7,7 @@ $sendmail = new SendMail;
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= $sendmail->projectName; ?></title>
+    <title><?= Config::projectName; ?></title>
     <link href="./img/favicon.ico" rel="shortcut icon">
     <link href="./bootstrap-3.1.1-dist/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
     <link href="./style/style.css" type="text/css" rel="stylesheet"/>
@@ -25,7 +25,7 @@ $sendmail = new SendMail;
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="<?= $sendmail->siteUrl; ?>"><?= $sendmail->projectName; ?></a>
+                <a class="navbar-brand" href="<?= Config::siteUrl; ?>"><?= Config::projectName; ?></a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -35,7 +35,7 @@ $sendmail = new SendMail;
                             <li class="dropdown-header">Nav header</li>
                             <li class="divider"></li>
                             <li><a href="#" onclick="return SendMail.clearTrash();"><span class="glyphicon glyphicon-filter"></span> Очистить E-mail'ы</a></li>
-                            <li><a href="<?= $sendmail->siteUrl; ?>/popup.php?do=parseFolder" onclick="return SendMail.parseFolder();"><span class="glyphicon glyphicon-import"></span> Распарсить папку</a></li>
+                            <li><a href="<?= Config::siteUrl; ?>/popup.php?do=parseFolder" onclick="return SendMail.parseFolder();"><span class="glyphicon glyphicon-import"></span> Распарсить папку</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -104,11 +104,11 @@ $sendmail = new SendMail;
                 <?php foreach ($sendmail->Data['Emails'] as $key => $value) { ?>
                 <tr>
                     <td><?= $key; ?></td>
-                    <td><?= $value; ?></td>
+                    <td><?= $value[0]; ?></td>
                     <td>
-                        <a class="btn btn-default btn-sm" href="<?= $sendmail->siteUrl; ?>/popup.php?do=editEmail&id=<?= $key; ?>" onclick="return SendMail.editItem(this);" target="_blank">
+                        <a class="btn btn-default btn-sm" href="popup.php?do=editEmail&id=<?= $key; ?>" onclick="return SendMail.editItem(this);" target="_blank">
                         <span class="glyphicon glyphicon-pencil"></span>&nbsp; Редактировать</a>
-                        <a class="btn btn-default btn-sm" href="<?= $sendmail->siteUrl; ?>/popup.php?do=delEmail&id=<?= $key; ?>" onclick="return SendMail.delItem(this);" target="_blank">
+                        <a class="btn btn-default btn-sm" href="popup.php?do=delEmail&id=<?= $key; ?>" onclick="return SendMail.delItem(this);" target="_blank">
                         <span class="glyphicon glyphicon-remove"></span>&nbsp; Удалить</a>
                     </td>
                 </tr>
@@ -119,7 +119,7 @@ $sendmail = new SendMail;
     </div>
     <div id="footer">
         <div class="container">
-            <p class="text-muted">&copy; <?= $sendmail->projectName; ?> <?= date(Y); ?></p>
+            <p class="text-muted">&copy; <?= Config::projectName; ?> <?= date(Y); ?></p>
         </div>
     </div>
 </body>

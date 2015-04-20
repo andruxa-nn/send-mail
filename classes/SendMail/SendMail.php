@@ -1,36 +1,10 @@
 <?php
-class SendMail extends Config {
+class SendMail {
+    public $db;
+    public $Data = array();
+
     function __construct() {
-        try {
-            $this->dbh = new PDO("mysql:host=$this->db_host;dbname=$this->db_name", $this->db_user, $this->db_pass);
-        } catch(PDOException $exeption) {
-            //$this->dbh->query("CREATE DATABASE IF NOT EXISTS `emails` DEFAULT CHARACTER SET `utf8`");
-            //CREATE TABLE `mail` (`id` INT(8) NOT NULL PRIMARY KEY AUTO_INCREMENT, `item` VARCHAR(255) NOT NULL UNIQUE KEY);
-            echo $exeption->getMessage();
-        }
-        if (!is_dir($this->dir1) || !is_dir($this->dir2)) {
-            @mkdir($this->dir1);
-            @mkdir($this->dir2);
-        }
-        switch($_REQUEST['do']) {
-            case 'addEmail':
-                $this->addEmail($_REQUEST['email']);
-                break;
-            case 'editEmail':
-                $this->getEmail($_REQUEST['id']);
-                $this->editEmail($_REQUEST['id'], $_REQUEST['newName']);
-                break;
-            case 'delEmail':
-                $this->getEmail($_REQUEST['id']);
-                $this->delEmail($_REQUEST['id']);
-                break;
-            case 'addUrl':
-                $this->addUrl($_REQUEST['url']);
-                break;
-            case 'parseFolder':
-                //$this->parseFolder();
-                break;
-        }
+        $this->db = new DataBase();
     }
 
     private function emailCheck($email) {
@@ -38,19 +12,18 @@ class SendMail extends Config {
     }
 
     private function emailRegularize($mixedString) {
-        preg_match_all('/([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})/im', $mixedString, $result);
+        preg_match_all('/(?:[a-z0-9_\.-]+)@(?:[a-z0-9_\.-]+)\.(?:[a-z\.]{2,6})/im', $mixedString, $result);
         return $result;
     }
 
-    private function nameDubleCheck($email) {
+    private function nameUniqueCheck($email) {
         try {
-            $query_db = $this->dbh->query("SELECT COUNT(*) FROM mail WHERE item = '{$email}'");
-            $query_db->setFetchMode(PDO::FETCH_ASSOC);
-            $result = $query_db->fetch();
+            $query_db = $this->db->query("SELECT COUNT(*) FROM mail WHERE item = '{$email}'");
+            $result = $query_db->fetchColumn();
         } catch (PDOException $exeption) {
             $this->Data['Errors'][] = "Ошибка! $exeption";
         }
-        if ($result["COUNT(*)"] > 0) return false;
+        return !$result ? true : false;
     }
 
     public function addUrl($url) {
@@ -58,7 +31,7 @@ class SendMail extends Config {
             $result = $this->emailRegularize(file_get_contents($url));
             foreach ($result[0] as $key => $value) {
                 try {
-                    $query_db = $this->dbh->query("INSERT INTO mail SET item = '{$item}'");
+                    $query_db = $this->db->query("INSERT INTO mail SET item = '{$item}'");
                     $this->Data['Success'][] = "Адрес $addEmail успешно добавлен в базу.";
                 } catch (PDOException $exeption) {
                     $this->Data['Errors'][] = "Ошибка! $exeption";
@@ -70,11 +43,11 @@ class SendMail extends Config {
     }
 
     public function addEmail($email) {
-        $email = htmlspecialchars(strip_tags(trim($email)));
+        $email = strip_tags(trim($email));
         if ($this->emailCheck($email)) {
-            if ($this->nameDubleCheck($email) !== false) {
+            if ($this->nameUniqueCheck($email)) {
                 try {
-                    $query_db = $this->dbh->query("INSERT INTO mail SET item = '{$email}'");
+                    $query_db = $this->db->query("INSERT INTO mail SET item = '{$email}'");
                     $this->Data['Success'][] = "Адрес $email успешно добавлен в базу.";
                 } catch (PDOException $exeption) {
                     $this->Data['Errors'][] = "Ошибка! $exeption";
@@ -88,10 +61,11 @@ class SendMail extends Config {
     }
 
     public function editEmail($id, $newName) {
-        $newName = htmlspecialchars(strip_tags(trim($newName)));
+        $newName = strip_tags(trim($newName));
         if ((int)$id && $this->emailCheck($newName)) {
             try {
-                $query_db = $this->dbh->query("UPDATE mail SET item = '{$newName}' WHERE id = '{$id}'");
+                $query_db = $this->db->prepare("UPDATE mail SET item = ? WHERE id = ?");
+                $query_db->execute(array($newName, $id));
                 $this->Data['Success'][] = "Адрес $newName успешно изменен.";
             } catch (PDOException $exeption) {
                 $this->Data['Errors'][] = "Ошибка! $exeption";
@@ -104,7 +78,7 @@ class SendMail extends Config {
     public function delEmail($id) {
         if ((int)$id) {
             try {
-                $query_db = $this->dbh->query("DELETE FROM mail WHERE id = $id");
+                $this->db->query("DELETE FROM mail WHERE id = $id");
                 $this->Data['Success'][] = "Адрес $id успешно удален.";
                 $this->Data['deleted'] = true;
             } catch (PDOException $exeption) {
@@ -116,7 +90,7 @@ class SendMail extends Config {
     public function getEmail($id) {
         if ((int)$id) {
             try {
-                $query_db = $this->dbh->query("SELECT * FROM mail WHERE id = $id");
+                $query_db = $this->db->query("SELECT * FROM mail WHERE id = $id");
                 $query_db->setFetchMode(PDO::FETCH_ASSOC);
                 $this->Data['Email'] = $query_db->fetch();
             } catch (PDOException $exeption) {
@@ -126,23 +100,22 @@ class SendMail extends Config {
     }
 
     public function getListEmails() {
-        $query_db = $this->dbh->query("SELECT * FROM mail ORDER BY id LIMIT 0, 10000");
-        $query_db->setFetchMode(PDO::FETCH_ASSOC);
-        while ($row = $query_db->fetch()) {
-            $this->Data['Emails'][$row['id']] = $row['item'];
-        }
+        $query_db = $this->db->query("SELECT * FROM mail ORDER BY id LIMIT 0, 10000");
+        $this->Data['Emails'] = $query_db->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_COLUMN|PDO::FETCH_GROUP);
+        return $this->Data['Emails'];
     }
 
     public function parseFolder() {
-        $listDir = new RecursiveDirectoryIterator($this->dir1);
+        $listDir = new RecursiveDirectoryIterator(Config::dir1);
         $iterator = new RecursiveIteratorIterator($listDir);
         foreach($iterator as $value) {
             if (is_file($value)) {
                 $item = $this->emailRegularize(@file_get_contents($value));
-                foreach ($item as $email) {
-                    if ($this->nameDubleCheck($email) !== false) {
+                foreach ($item[0] as $email) {
+                    if ($this->nameUniqueCheck($email)) {
                         try {
-                            $this->dbh->query("INSERT INTO mail SET item = '$email'");
+                            $query = $this->db->prepare("INSERT INTO mail SET item = ?");
+                            $query->execute(array($email));
                             $this->Data['Success'][] = "Адрес $email успешно добавлен в базу.";
                         } catch (PDOException $exeption) {
                             $this->Data['Errors'][] = "Ошибка! $exeption";
@@ -153,8 +126,8 @@ class SendMail extends Config {
                     }
                 }
             }
-            //@copy($value, $this->dir2.basename($value));
-            //@unlink($value);
+            @copy($value, Config::dir2 . '/' . basename($value));
+            @unlink($value);
         }
     }
 }

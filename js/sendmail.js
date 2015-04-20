@@ -1,3 +1,31 @@
+function parseURL(url) {
+    var a =  document.createElement('a');
+    a.href = url;
+    return {
+        source: url,
+        protocol: a.protocol.replace(':',''),
+        host: a.hostname,
+        port: a.port,
+        query: a.search,
+        params: (function(){
+            var ret = {},
+                seg = a.search.replace(/^\?/,'').split('&'),
+                len = seg.length, i = 0, s;
+            for (;i<len;i++) {
+                if (!seg[i]) { continue; }
+                s = seg[i].split('=');
+                ret[s[0]] = s[1];
+            }
+            return ret;
+        })(),
+        file: (a.pathname.match(/\/([^\/?#]+)$/i) || [,''])[1],
+        hash: a.hash.replace('#',''),
+        path: a.pathname.replace(/^([^\/])/,'/$1'),
+        relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [,''])[1],
+        segments: a.pathname.replace(/^\//,'').split('/')
+    };
+}
+
 var SendMail = {
     // Очистка от автоматизированных адресов
     clearTrash : function() {
@@ -20,7 +48,7 @@ var SendMail = {
             });
             (function delTrash() {
                 $.ajax({
-                    url: '/sendMail/http.php?do=delEmail&id=' + trashIdArr[0],
+                    url: 'http.php?do=delEmail&id=' + trashIdArr[0],
                     type: 'POST',
                     beforeSend: function() {
                         if (!trashIdArr.length) return false;
@@ -39,13 +67,15 @@ var SendMail = {
     },
     // Редактирование e-mail адреса
     editItem : function(self) {
+        if (typeof self != 'object') return;
+        var jsUrl = parseURL(self.href);
         var name = $(self).parent().siblings(':eq(1)');
         if (newName = prompt(name.text())) {
             $.ajax({
-                url: '/sendMail/',
+                url: 'http.php?do=editEmail',
                 type: 'POST',
                 data: {
-                    editEmail: $(self).attr('value'),
+                    id: jsUrl.params.id,
                     newName: newName
                 },
                 success: function(data) {
@@ -60,6 +90,7 @@ var SendMail = {
     },
     // Удаление e-mail адреса
     delItem : function(self) {
+        var jsUrl = parseURL(self.href);
         var modelCont = $('#myModal');
         if (modelCont.length) {
             var trCont = $(self).closest('tr');
@@ -69,9 +100,10 @@ var SendMail = {
             modelCont.modal({
                 backdrop: false
             });
+            modelCont.find('.btn-primary').focus();
             modelCont.find('.modal-footer button:eq(0)').unbind().click(function(event) {
                 $.ajax({
-                    url: '/sendMail/http.php?do=delEmail&id=' + $(self).attr('value'),
+                    url: 'http.php?do=delEmail&id=' + jsUrl.params.id,
                     type: 'POST',
                     success: function() {
                         modelCont.modal('hide').on('hidden.bs.modal', function(event) {
@@ -90,7 +122,7 @@ var SendMail = {
     parseFolder : function() {
         if (confirm('Подтверждаете выполнение операции?')) {
             $.ajax({
-               url: '/sendMail/http.php?do=parseFolder',
+               url: 'http.php?do=parseFolder',
                type: 'POST',
                success: function() {}
             });
