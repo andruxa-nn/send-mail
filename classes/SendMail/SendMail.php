@@ -106,7 +106,7 @@ class SendMail {
     }
 
     public function parseFolder() {
-        $listDir = new RecursiveDirectoryIterator(Config::dir1);
+        $listDir = new RecursiveDirectoryIterator(Config::basedir . Config::dir1);
         $iterator = new RecursiveIteratorIterator($listDir);
         foreach($iterator as $value) {
             if (is_file($value)) {
@@ -126,7 +126,7 @@ class SendMail {
                     }
                 }
             }
-            @copy($value, Config::dir2 . '/' . basename($value));
+            @copy($value, Config::basedir . Config::dir2 . '/' . basename($value));
             @unlink($value);
         }
     }

@@ -1,3 +1,4 @@
-.project
-folder_input/
-folder_output/
+.idea/
+vendor/
+resouces/
+Config.php

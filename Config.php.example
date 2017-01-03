@@ -1,0 +1,14 @@
+<?php
+
+class Config {
+    const projectName   = '';
+    const siteUrl       = '';
+    const db_host       = '';
+    const db_user       = '';
+    const db_pass       = '';
+    const db_name       = '';
+    const basedir       = __DIR__;
+    const folder_input  = '';
+    const folder_output = '';
+    const debug         = true;
+}

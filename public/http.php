@@ -18,5 +18,3 @@ switch($_REQUEST['do']) {
         $sendmail->parseFolder();
         break;
 }
-
-?>

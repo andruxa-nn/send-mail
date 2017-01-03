@@ -1,4 +1,5 @@
 <?php
+require_once '../.startup.php';
 $sendmail = new SendMail;
 ?>
 <!DOCTYPE html>
@@ -8,12 +9,12 @@ $sendmail = new SendMail;
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= Config::projectName; ?></title>
-    <link href="./img/favicon.ico" rel="shortcut icon">
-    <link href="./bootstrap-3.1.1-dist/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
-    <link href="./style/style.css" type="text/css" rel="stylesheet"/>
-    <script src="./js/jquery-1.8.3.min.js" type="text/javascript"></script>
-    <script src="./bootstrap-3.1.1-dist/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="./js/sendmail.js?v<?= rand(100, 999); ?>" type="text/javascript"></script>
+    <link href="img/favicon.ico" rel="shortcut icon">
+    <link href="bootstrap-3.1.1-dist/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="style/style.css" type="text/css" rel="stylesheet"/>
+    <script src="js/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script src="bootstrap-3.1.1-dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="js/sendmail.js?v<?= rand(100, 999); ?>" type="text/javascript"></script>
 </head>
 <body>
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -101,6 +102,7 @@ $sendmail = new SendMail;
                 </tr>
             </thead>
             <tbody>
+                <?php if (isset($sendmail->Data['Emails'])) { ?>
                 <?php foreach ($sendmail->Data['Emails'] as $key => $value) { ?>
                 <tr>
                     <td><?= $key; ?></td>
@@ -112,6 +114,7 @@ $sendmail = new SendMail;
                         <span class="glyphicon glyphicon-remove"></span>&nbsp; Удалить</a>
                     </td>
                 </tr>
+                <?php } ?>
                 <?php } ?>
             </tbody>
         </table>

@@ -8,9 +8,9 @@ $sendmail = new SendMail;
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $sendmail->projectName; ?></title>
-    <link href="./img/favicon.ico" rel="shortcut icon">
-    <link href="./bootstrap-3.1.1-dist/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
-    <link href="./style/style.css" type="text/css" rel="stylesheet"/>
+    <link href="img/favicon.ico" rel="shortcut icon">
+    <link href="bootstrap-3.1.1-dist/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="style/style.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">

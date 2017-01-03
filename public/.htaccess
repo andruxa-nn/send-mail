@@ -2,6 +2,4 @@ AddDefaultCharset utf-8
 
 Options -Indexes
 
-php_value auto_prepend_file ".startup.php"
-
 DirectoryIndex index.php index.html index.cgi

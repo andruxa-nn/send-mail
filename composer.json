@@ -1,0 +1,22 @@
+{
+  "name": "smity/send_mail",
+  "description": "parser email address",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Malyshev Andrey",
+      "email": "Agentus2005@yandex.ru"
+    }
+  ],
+  "autoload": {
+    "classmap": [
+      "classes/",
+      "Config.php"
+    ]
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^3.2",
+    "psy/psysh": "^0.8.0"
+  }
+}
